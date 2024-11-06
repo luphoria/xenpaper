@@ -70,6 +70,7 @@ export const centsToRatio = (cents: number, octave: number = 0): number => {
 };
 
 export const octaveDivisionToRatio = (steps: number, stepsInOctave: number, octaveSize: number, octave: number = 0): number => {
+    if (stepsInOctave < 1) stepsInOctave = 1; // Prevent crash
     return Math.pow(octaveSize, (steps + (octave * stepsInOctave)) / stepsInOctave);
 };
 
@@ -78,6 +79,7 @@ export const ratioToCents = (ratio: number, octave: number = 0): number => {
 };
 
 export const ratioToOctaveDivision = (ratio: number, stepsInOctave: number, octaveSize: number, octave: number = 0): number => {
+    if (ratio == 0) ratio = 1; // Prevent crash
     return (Math.log(ratio) / Math.log(octaveSize) * stepsInOctave) - (octave * stepsInOctave);
 };
 

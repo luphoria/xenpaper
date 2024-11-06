@@ -85,6 +85,7 @@ export const pitchToRatio = (pitch: PitchType, context: Context): number => {
     if (type === "PitchOctaveDivision") {
         const { numerator, denominator, octaveSize } =
             pitch.value as PitchOctaveDivisionType;
+            if (octaveSize < 1) octaveSize == 1;
         return (
             octaveDivisionToRatio(numerator, denominator, octaveSize) *
             octaveMulti
@@ -101,6 +102,8 @@ export const pitchToRatio = (pitch: PitchType, context: Context): number => {
 
 const edoToRatios = (edoSize: number, octaveSize: number): number[] => {
     const ratios: number[] = [];
+    if (edoSize < 1) edoSize = 1;
+    if (octaveSize < 1) octaveSize = 1;
     for (let i = 0; i < edoSize; i++) {
         ratios.push(octaveDivisionToRatio(i, edoSize, octaveSize));
     }
@@ -176,6 +179,7 @@ const tailToTime = (
 //
 
 const ratioWrap = (ratio: number, octaveSize: number): number => {
+    if (octaveSize < 1) octaveSize = 1;
     while (ratio < 1) {
         ratio *= octaveSize;
     }
@@ -233,6 +237,7 @@ const edoToLabels = (
     octaveSize: number
 ): string[] => {
     const labels: string[] = [];
+    if (edoSize < 1) edoSize = 1;
     for (let i = 0; i < edoSize; i++) {
         const centsLabel = ratioToCentsLabel(ratios[i], octaveSize);
         labels.push(`${i}\\${edoSize}  ${centsLabel}`);
@@ -422,7 +427,7 @@ const setScale = (setScale: SetScaleType, context: Context): void => {
         const { divisions, octaveSize } = scale as EdoScaleType;
         context.scale = edoToRatios(divisions, octaveSize);
         context.scaleLabels = edoToLabels(divisions, context.scale, octaveSize);
-        context.octaveSize = octaveSize;
+        context.octaveSize = octaveSize < 1 ? 1 : octaveSize;
         return;
     }
 
@@ -558,7 +563,7 @@ const rulerStateCaptureRootHz = (
     return {
         ...initial,
         rootHz: context.rootHz,
-        octaveSize: context.octaveSize,
+        octaveSize: context.octaveSize < 1 ? 1 : context.octaveSize,
     };
 };
 
